@@ -1,8 +1,9 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import time from '../../iconmonstr-time-2.svg';
 import likeFull from '../../iconmonstr-favorite-3.svg';
 import likeEmpty from '../../iconmonstr-favorite-2.svg';
 import styled from 'styled-components';
+import { useFetch } from '../../hooks/useFetch';
 
 const Card = styled.div`
   width: 34.375rem;
@@ -41,6 +42,7 @@ const CardLike = styled.div`
 const CardContainer = styled.div`
   display: flex;
   width: 100%;
+  flex-wrap: wrap;
 `;
 
 const SmallText = styled.div`
@@ -75,43 +77,41 @@ const BigText = styled.div`
 
 const SearchBody = () => {
 
+  const { respData } = useFetch('angular');
+
+  const [ favoriteList, setFavoriteList ] = useState<string[]>([]);
+
   const [isFave, setIsFave] = useState(false);
 
-  const handleClick = () => {
-    setIsFave(current => !current);
+  const handleClick = (value: any) => {
+    setFavoriteList(current => [value, ...current]);
   };
+
+  useEffect(() => {
+    localStorage.setItem('Favorites Array', JSON.stringify(favoriteList));
+  }, [favoriteList]);  
 
   return (
     <>
       <CardContainer>
-        <Card>
-          <CardInfo>
-            <SmallText>
-              <img src={time} alt="time" />
-              <span>2 hours ago</span>
-            </SmallText>
-            <BigText>
-              <h3>Event-driven state management in React using Storeon</h3>
-            </BigText>
-          </CardInfo>
-          <CardLike onClick={handleClick}>
-            <img src={isFave ? likeFull : likeEmpty} alt="like Full" />
-          </CardLike>
-        </Card>
-        <Card>
-          <CardInfo>
-            <SmallText>
-              <img src={time} alt="time" />
-              <span>2 hours ago</span>
-            </SmallText>
-            <BigText>
-              Progressive Web Apps with React.js: Part I - Introduction
-            </BigText>
-          </CardInfo>
-          <CardLike onClick={handleClick}>
-            <img src={isFave ? likeFull : likeEmpty} alt="like Empty" />
-          </CardLike>
-        </Card>
+        {
+          respData.map( ( {created_at, story_title, story_id, created_at_i}: any) => (
+            <Card key={created_at_i}>
+              <CardInfo>
+                <SmallText>
+                  <img src={time} alt="time" />
+                  <span>{ created_at }</span>
+                </SmallText>
+                <BigText>
+                  <h3>{ story_title }</h3>
+                </BigText>
+              </CardInfo>
+              <CardLike onClick={() => handleClick(story_id)}>
+                <img src={isFave ? likeFull : likeEmpty} alt="like Full" />
+              </CardLike>
+            </Card>
+          ))
+        }
       </CardContainer>
     </>
   )

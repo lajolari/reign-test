@@ -1,4 +1,3 @@
-import React from 'react';
 import logo from './hacker-news.svg';
 import './App.css';
 import SearchBar from './components/SearchBar/SearchBar';
