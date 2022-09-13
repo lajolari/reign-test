@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { FC, useState } from 'react'
 import './SearchBar.css';
 import styled from 'styled-components';
 import angular from '../../assets/image-138.png';
@@ -70,36 +70,36 @@ const SearchOption = styled.div`
   }
 `;
 
-const SearchBar = () => {
+interface SearchBarProps {
+  toggleOptions: (value: boolean) => void,
+  isHidden: boolean,
+  manageSearchFilter: (value: string) => void
+  searchFilter: string
+}
 
-  const [isHidden, setIsHidden] = useState(true);
-
-  const toggleOptions = () => {
-    setIsHidden(current => !current)
-  }
-
-  const handleClick = (valor: string) => {
-    console.log(valor);
-    setIsHidden(current => !current);
-  }
+const SearchBar:FC<SearchBarProps> = ({ toggleOptions, isHidden, manageSearchFilter, searchFilter}) => {
   
   return (
     <>
-        <SearchBarContainer onClick={toggleOptions}>
-            Select your news
+        <SearchBarContainer onClick={() => toggleOptions(false)}>
+            {
+              ( searchFilter.length === 0 ) ?
+              ( 'Select your news' ) :
+              ( searchFilter )              
+            }
         </SearchBarContainer>
         {
           !isHidden && (
             <SearchBarOptions>
-              <SearchOption key={"1"} onClick={() => handleClick('angular')} >
+              <SearchOption key={"1"} onClick={() => manageSearchFilter('angular')} >
                 <img src={angular} alt="Angular" />
                 <span>Angular</span>
               </SearchOption>
-              <SearchOption key={"2"} onClick={() => handleClick('react')}>
+              <SearchOption key={"2"} onClick={() => manageSearchFilter('react')}>
                 <img src={react} alt="React" />
                 <span>React</span>
               </SearchOption>
-              <SearchOption key={"3"} onClick={() => handleClick('vuejs')}>
+              <SearchOption key={"3"} onClick={() => manageSearchFilter('vuejs')}>
                 <img src={vuejs} alt="VueJS" />
                 <span>Vuejs</span>
               </SearchOption>

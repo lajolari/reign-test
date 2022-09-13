@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from 'react'
+import React, { FC, useEffect, useState } from 'react'
 import time from '../../iconmonstr-time-2.svg';
 import likeFull from '../../iconmonstr-favorite-3.svg';
 import likeEmpty from '../../iconmonstr-favorite-2.svg';
 import styled from 'styled-components';
-import { useFetch } from '../../hooks/useFetch';
 
 const Card = styled.div`
   width: 34.375rem;
@@ -75,27 +74,24 @@ const BigText = styled.div`
   color: #767676;
 `;
 
-const SearchBody = () => {
+interface SearchBodyProps {
+  infoToRender: {
+      created_at: string,
+      story_title: string,
+      story_id: number,
+      created_at_i: number
+  }[];
+  setFavorite: (value: number) => void;
+  favoriteList: number[]
+}
 
-  const { respData } = useFetch('angular');
-
-  const [ favoriteList, setFavoriteList ] = useState<string[]>([]);
-
-  const [isFave, setIsFave] = useState(false);
-
-  const handleClick = (value: any) => {
-    setFavoriteList(current => [value, ...current]);
-  };
-
-  useEffect(() => {
-    localStorage.setItem('Favorites Array', JSON.stringify(favoriteList));
-  }, [favoriteList]);  
+const SearchBody: FC<SearchBodyProps> = ({infoToRender, setFavorite, favoriteList}) => {
 
   return (
     <>
       <CardContainer>
         {
-          respData.map( ( {created_at, story_title, story_id, created_at_i}: any) => (
+          infoToRender.map( ( {created_at, story_title, story_id, created_at_i}: any) => (
             <Card key={created_at_i}>
               <CardInfo>
                 <SmallText>
@@ -106,8 +102,8 @@ const SearchBody = () => {
                   <h3>{ story_title }</h3>
                 </BigText>
               </CardInfo>
-              <CardLike onClick={() => handleClick(story_id)}>
-                <img src={isFave ? likeFull : likeEmpty} alt="like Full" />
+              <CardLike onClick={() => setFavorite(story_id)}>
+                <img src={(favoriteList.find(ele => ele == story_id)) ? likeFull : likeEmpty} alt="like" />
               </CardLike>
             </Card>
           ))
