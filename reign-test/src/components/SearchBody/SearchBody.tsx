@@ -23,6 +23,11 @@ const CardInfo = styled.div`
   flex-direction: column;
   align-items: flex-start;
   justify-content: center;
+  cursor: pointer;
+
+  &:hover {
+    opacity: 0.6;
+  }
 `;
 
 const CardLike = styled.div`
@@ -79,7 +84,8 @@ interface SearchBodyProps {
       created_at: string,
       story_title: string,
       story_id: number,
-      created_at_i: number
+      created_at_i: number,
+      story_url: string
   }[];
   setFavorite: (value: number) => void;
   favoriteList: number[]
@@ -87,13 +93,17 @@ interface SearchBodyProps {
 
 const SearchBody: FC<SearchBodyProps> = ({infoToRender, setFavorite, favoriteList}) => {
 
+  const openLink = (value: string) => {
+    window.open(value, '_blank', 'noopener,noreferrer');
+  }
+
   return (
     <>
       <CardContainer>
         {
-          infoToRender.map( ( {created_at, story_title, story_id, created_at_i}: any) => (
+          infoToRender.map( ( {created_at, story_title, story_id, created_at_i, story_url}: any) => (
             <Card key={created_at_i}>
-              <CardInfo>
+              <CardInfo onClick={() => openLink(story_url)}>
                 <SmallText>
                   <img src={time} alt="time" />
                   <span>{ created_at }</span>

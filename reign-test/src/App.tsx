@@ -45,11 +45,12 @@ function App() {
     return searchData.slice(firstPageIndex, lastPageIndex);
   }, [page]);
 
-  const filteredData = currentTableData.map(({created_at, story_title, story_id, created_at_i}: any) => ({
+  const filteredData = currentTableData.map(({created_at, story_title, story_id, created_at_i, story_url}: any) => ({
     created_at,
     story_title,
     story_id,
-    created_at_i
+    created_at_i,
+    story_url
   }));  
 
   const filterFavorites = (value: number) => {
